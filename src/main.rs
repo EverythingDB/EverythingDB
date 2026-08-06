@@ -3,6 +3,9 @@ use sqlx::postgres::PgConnectOptions;
 use sqlx::postgres::PgPoolOptions;
 use std::env;
 
+use crate::traits::HasID;
+use crate::traits::HasTitle;
+
 mod structs;
 mod traits;
 
@@ -14,7 +17,7 @@ async fn main() -> Result<(), Box<dyn Error>>{
 
     let book= structs::book::Book::new(media, "James".to_string(), 42);
 
-    println!("{:?}", book);
+    println!("title: {}, author: {}, pages: {}, id: {}", book.title(), book.author, book.page_count, book.id());
 
     let username = env::var("DB_USERNAME")?;
     let password = env::var("DB_PASSWORD")?;
