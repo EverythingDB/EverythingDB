@@ -1,28 +1,35 @@
-use std::io;
+use std::error::Error;
+use sqlx::Connection;
+use sqlx::PgConnection;
+use sqlx::Row;
+use sqlx::postgres::PgConnectOptions;
+use std::env;
 
-fn main() {
-    let mut input = String::new();
-    println!("Enter a number:");
-    io::stdin()
-        .read_line(&mut input)
-        .expect("failed"); 
-    
-    let number: i32 = input
-        .trim()
-        .parse()
-        .expect("not a number");
-    
-    println!("{}", number);
-    println!("{}", parse_string_add_one(input.as_str().trim()));
-}
+#[tokio::main]
 
-fn parse_string_add_one(num: &str) -> i32 {
-    let number: Result<i32, std::num::ParseIntError> = num.parse::<i32>();
-    match number {
-        Ok(_) => {return number.unwrap_or_default()},
-        Err(_) => {
-            dbg!(number.unwrap_err());
-        },
-    }
-    return 0;
+async fn main() -> Result<(), Box<dyn Error>>{
+    dotenvy::dotenv().ok();
+
+    let username = env::var("DB_USERNAME")?;
+    let password = env::var("DB_PASSWORD")?;
+    let database = env::var("DB_NAME")?;
+    let host = env::var("DB_HOST")?;
+    let port = env::var("DB_PORT")?;
+
+    let options = PgConnectOptions::new()
+        .host(&host)
+        .port(port.parse()?)
+        .username(&username)
+        .password(&password)
+        .database(&database);
+
+    let mut conn = PgConnection::connect_with(&options).await?;
+    
+    let res = sqlx::query("SELECT 1+1 as sum")
+        .fetch_one(&mut conn)
+        .await?;
+    
+    let sum: i32 = res.get("sum");
+    println!("1+1 = {}", sum);
+    Ok(())
 }
