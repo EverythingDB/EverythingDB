@@ -1,8 +1,7 @@
 use std::error::Error;
-use sqlx::Connection;
-use sqlx::PgConnection;
 use sqlx::Row;
 use sqlx::postgres::PgConnectOptions;
+use sqlx::postgres::PgPoolOptions;
 use std::env;
 
 #[tokio::main]
@@ -23,10 +22,13 @@ async fn main() -> Result<(), Box<dyn Error>>{
         .password(&password)
         .database(&database);
 
-    let mut conn = PgConnection::connect_with(&options).await?;
+    let pool = PgPoolOptions::new()
+        .max_connections(5)
+        .connect_with(options)
+        .await?;
     
     let res = sqlx::query("SELECT 1+1 as sum")
-        .fetch_one(&mut conn)
+        .fetch_one(&pool)
         .await?;
     
     let sum: i32 = res.get("sum");
