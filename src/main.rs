@@ -3,43 +3,18 @@ use sqlx::postgres::PgConnectOptions;
 use sqlx::postgres::PgPoolOptions;
 use std::env;
 
-struct Book {
-    pub title: String,
-    pub author: String,
-    pub isbn: String,
-}
-
-async fn create(book: &Book, pool: &sqlx::PgPool) -> Result<(), Box<dyn Error>> {
-    let query: &str = "INSERT INTO book (title, author, isbn) VALUES ($1, $2, $3)";
-
-    sqlx::query(query)
-        .bind(&book.title)
-        .bind(&book.author)
-        .bind(&book.isbn)
-        .execute(pool)
-        .await?;
-
-    Ok(())
-}
-
-async fn update(
-    book: &Book, isbn: &str, pool: &sqlx::PgPool
-) -> Result<(), Box<dyn Error>> {
-    let query = "UPDATE book SET title = %1, author = $2 WHERE isbn = $3";
-
-    sqlx::query(query)
-        .bind(&book.title)
-        .bind(&book.author)
-        .bind(&book.isbn)
-        .execute(pool)
-        .await?;
-
-    Ok(())
-}
+mod structs;
+mod traits;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>>{
     dotenvy::dotenv().ok();
+
+    let media: structs::media::Media = structs::media::Media::new(1, "some show");
+
+    let book= structs::book::Book::new(media, "James".to_string(), 42);
+
+    println!("{:?}", book);
 
     let username = env::var("DB_USERNAME")?;
     let password = env::var("DB_PASSWORD")?;
@@ -60,14 +35,6 @@ async fn main() -> Result<(), Box<dyn Error>>{
         .await?;
     
     sqlx::migrate!("./migrations").run(&pool).await?;
-
-    let book = Book{
-        title: "Salem's Lot".to_string(),
-        author: "Stephen King".to_string(),
-        isbn: "978-0-385-00751-1".to_string(),
-    };
-
-    create(&book, &pool).await?;
 
     Ok(())
 }
