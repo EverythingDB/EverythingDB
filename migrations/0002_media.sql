@@ -1,4 +1,7 @@
 BEGIN;
+-- setup
+DROP TABLE book;
+
 
 -- Root entity
 CREATE TABLE media (
@@ -39,10 +42,11 @@ CREATE TABLE book (
         REFERENCES print(media_id)
         ON DELETE CASCADE,
     
-    isbn VARCHAR(13),
+    isbn VARCHAR(13) UNIQUE,
     author TEXT,
     page_count INTEGER
 );
+
 
 -- Movies
 CREATE TABLE movie (
@@ -57,7 +61,7 @@ CREATE TABLE movie (
 CREATE TABLE show (
     media_id INTEGER PRIMARY KEY
         REFERENCES audiovisual(media_id)
-        ON DELETE CASCADE
+        ON DELETE CASCADE,
 
     episodes_count INTEGER
 );
@@ -91,11 +95,6 @@ CREATE TABLE manga (
         ON DELETE CASCADE,
 
     demographic TEXT
-);
-
--- Japanese animation
-CREATE TABLE anime (
-
 );
 
 COMMIT;

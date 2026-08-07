@@ -1,21 +1,21 @@
-use sqlx::{PgPool};
+use sqlx::query_scalar;
 
-use crate::structs::media::Media;
-use crate::traits::{HasAuthor, HasID, HasISBN, HasPageCount, HasTitle, PublicTable};
+use crate::structs::print::Print;
+use crate::traits::{HasAuthor, HasID, HasISBN, HasPageCount, HasSynopsis, HasTitle, Insertable};
 
 
 #[derive(Debug)]
 pub struct Book {
-    pub media: Media,
+    pub print: Print,
     pub isbn: String,
     pub author: String,
-    pub page_count: u32,
+    pub page_count: i32,
 }
 
 impl Book{
-    pub fn new(media: Media, isbn:String, author: String, page_count: u32) -> Self{
+    pub fn new(print: Print, isbn:String, author: String, page_count: i32) -> Self{
         Book{
-            media: media,
+            print: print,
             isbn: isbn,
             author: author,
             page_count: page_count
@@ -23,24 +23,34 @@ impl Book{
     }
 }
 
-impl PublicTable for Book {   
-    async fn insert(&self, pool: &PgPool) -> Result<u32, sqlx::Error> {
-        todo!()
-    }
-    async fn delete(&self, pool: &PgPool) {
-        todo!()
+impl Insertable for Book {
+    async fn insert<'e, E>(&self, executor: E) -> Result<i32, sqlx::Error>
+    where E: sqlx::Executor<'e, Database = sqlx::Postgres>
+    {
+        let id = query_scalar!(
+            "INSERT INTO book (media_id, isbn, author,page_count) VALUES ($1, $2, $3, $4) RETURNING media_id",
+            self.id(), self.isbn(), self.author(), self.page_count())
+            .fetch_one(executor)
+            .await?;
+        
+        Ok(id)
     }
 }
 
 impl HasID for Book {
-    fn id(&self) -> Option<u32> {
-        self.media.id
+    fn id(&self) -> Option<i32> {
+        self.print.media.id
     }
 }
 impl HasTitle for Book {
     fn title(&self) -> &str {
-        self.media.title.as_str()
+        self.print.media.title.as_str()
     }   
+}
+impl HasSynopsis for Book {
+    fn synopsis(&self) -> &str {
+        self.print.synopsis()
+    }
 }
 impl HasISBN for Book {
     fn isbn(&self) -> &str {
@@ -53,7 +63,7 @@ impl HasAuthor for Book {
     }
 }
 impl HasPageCount for Book {
-    fn page_count(&self) -> u32 {
+    fn page_count(&self) -> i32 {
         self.page_count
     }
 }
