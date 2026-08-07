@@ -1,6 +1,6 @@
 use sqlx::query_scalar;
 
-use crate::{structs::media::Media, traits::{HasID, HasSynopsis, HasTitle, Insertable}};
+use crate::{structs::root_structs::media::Media, traits::{HasID, HasSynopsis, HasTitle, Insertable}};
 
 #[derive(Debug)]
 pub struct Print {
@@ -29,18 +29,10 @@ impl Insertable for Print {
     }
 }
 
-impl HasID for Print {
-    fn id(&self) -> Option<i32> {
-        self.media.id
+has_property!(
+    Print => {
+        [HasID, id, Option<i32>, media.id],
+        [HasTitle, title, &str, media.title.as_str()],
+        [HasSynopsis, synopsis, &str, media.synopsis.as_str()]
     }
-}
-impl HasTitle for Print {
-    fn title(&self) -> &str {
-        self.media.synopsis()
-    }
-}
-impl HasSynopsis for Print {
-    fn synopsis(&self) -> &str {
-        self.media.synopsis()
-    }
-}
+);

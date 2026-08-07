@@ -1,3 +1,4 @@
+// Action traits
 pub trait Insertable {
     async fn insert<'e, E>(&self, executor: E) -> Result<i32, sqlx::Error>
     where E: sqlx::Executor<'e, Database = sqlx::Postgres>;
@@ -7,6 +8,7 @@ pub trait Deletable {
     where E: sqlx::Executor<'e, Database = sqlx::Postgres>;
 }
 
+// Has* traits
 pub trait HasID {
     fn id(&self) -> Option<i32>;
 }

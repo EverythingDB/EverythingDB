@@ -26,7 +26,7 @@ impl Insertable for Media {
     {
         let id = query_scalar!(
             "INSERT INTO media (title, synopsis) VALUES ($1, $2) RETURNING id",
-            self.title(), self.synopsis)
+            self.title(), self.synopsis())
             .fetch_one(executor)
             .await?;
         
@@ -41,18 +41,10 @@ impl Deletable for Media {
     }
 }
 
-impl HasID for Media {
-    fn id(&self) -> Option<i32> {
-        self.id
+has_property!(
+    Media => {
+        [HasID, id, Option<i32>, id],
+        [HasTitle, title, &str, title.as_str()],
+        [HasSynopsis, synopsis, &str, synopsis.as_str()]
     }
-}
-impl HasTitle for Media {
-    fn title(&self) -> &str {
-        self.title.as_str()
-    }   
-}
-impl HasSynopsis for Media {
-    fn synopsis(&self) -> &str {
-        self.synopsis.as_str()
-    }
-}
+);

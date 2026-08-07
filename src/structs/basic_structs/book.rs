@@ -1,7 +1,7 @@
 use sqlx::query_scalar;
 
-use crate::structs::print::Print;
-use crate::traits::{HasAuthor, HasID, HasISBN, HasPageCount, HasSynopsis, HasTitle, Insertable};
+use crate::structs::property_structs::print::Print;
+use crate::{structs::macros, traits::{HasAuthor, HasID, HasISBN, HasPageCount, HasSynopsis, HasTitle, Insertable}};
 
 
 #[derive(Debug)]
@@ -37,33 +37,13 @@ impl Insertable for Book {
     }
 }
 
-impl HasID for Book {
-    fn id(&self) -> Option<i32> {
-        self.print.media.id
+has_property!(
+    Book => {
+        [HasID, id, Option<i32>, print.media.id],
+        [HasTitle, title, &str, print.media.title.as_str()],
+        [HasSynopsis, synopsis, &str, print.media.synopsis.as_str()],
+        [HasISBN, isbn, &str, isbn.as_str()],
+        [HasAuthor, author, &str, author.as_str()],
+        [HasPageCount, page_count, i32, page_count]
     }
-}
-impl HasTitle for Book {
-    fn title(&self) -> &str {
-        self.print.media.title.as_str()
-    }   
-}
-impl HasSynopsis for Book {
-    fn synopsis(&self) -> &str {
-        self.print.synopsis()
-    }
-}
-impl HasISBN for Book {
-    fn isbn(&self) -> &str {
-        &self.isbn.as_str()
-    }
-}
-impl HasAuthor for Book {
-    fn author(&self) -> &str {
-        self.author.as_str()
-    }
-}
-impl HasPageCount for Book {
-    fn page_count(&self) -> i32 {
-        self.page_count
-    }
-}
+);

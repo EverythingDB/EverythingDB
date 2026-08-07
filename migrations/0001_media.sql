@@ -1,9 +1,10 @@
 BEGIN;
 -- setup
-DROP TABLE book;
 
+-- ===============================================
+-- Root entities
+-- ===============================================
 
--- Root entity
 CREATE TABLE media (
     id          SERIAL PRIMARY KEY,
 
@@ -21,8 +22,6 @@ CREATE TABLE audiovisual (
     media_id INTEGER PRIMARY KEY
         REFERENCES media(id)
         ON DELETE CASCADE,
-
-    release_date DATE
 );
 
 -- Any printed work
@@ -30,6 +29,15 @@ CREATE TABLE print (
     media_id INTEGER PRIMARY KEY
         REFERENCES media(id)
         ON DELETE CASCADE
+);
+
+-- Animation-specific data
+CREATE TABLE animation (
+    media_id INTEGER PRIMARY KEY
+        REFERENCES audiovisual(media_id)
+        ON DELETE CASCADE,
+
+    studio TEXT
 );
 
 -- ===============================================
@@ -64,15 +72,6 @@ CREATE TABLE show (
         ON DELETE CASCADE,
 
     episodes_count INTEGER
-);
-
--- Animation-specific data
-CREATE TABLE animation (
-    media_id INTEGER PRIMARY KEY
-        REFERENCES audiovisual(media_id)
-        ON DELETE CASCADE,
-
-    studio TEXT
 );
 
 -- ===============================================
