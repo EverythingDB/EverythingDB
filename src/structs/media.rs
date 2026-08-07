@@ -2,12 +2,13 @@ use crate::traits::{HasTitle, HasID};
 
 #[derive(Debug)]
 pub struct Media {
-    pub id: u32,
+    pub id: Option<u32>,
     pub title: String,
 }
 
 impl Media {
-    pub fn new(id: u32, title: &str) -> Self{
+    /// Set id as None unless reading from the db
+    pub fn new(id: Option<u32>, title: &str) -> Self{        
         Media{
             id: id,
             title: title.to_string()
@@ -21,7 +22,7 @@ impl HasTitle for Media {
     }   
 }
 impl HasID for Media {
-    fn id(&self) -> u32 {
+    fn id(&self) -> Option<u32> {
         self.id
     }
 }
