@@ -21,7 +21,7 @@ CREATE TABLE media (
 CREATE TABLE audiovisual (
     media_id INTEGER PRIMARY KEY
         REFERENCES media(id)
-        ON DELETE CASCADE,
+        ON DELETE CASCADE
 );
 
 -- Any printed work
