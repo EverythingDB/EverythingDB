@@ -1,12 +1,12 @@
-use sqlx::query_scalar;
+use sqlx::{query, query_scalar, Postgres, Transaction};
 
 use crate::traits::{Deletable, HasID, HasSynopsis, HasTitle, Insertable};
 
 #[derive(Debug)]
 pub struct Media {
-    pub id: Option<i32>,
-    pub title: String,
-    pub synopsis: String
+    id: Option<i32>,
+    title: String,
+    synopsis: String
 }
 
 impl Media {
@@ -21,23 +21,38 @@ impl Media {
 }
 
 impl Insertable for Media {
-    async fn insert<'e, E>(&self, executor: E) -> Result<i32, sqlx::Error>
-    where E: sqlx::Executor<'e, Database = sqlx::Postgres>
-    {
+    async fn insert(
+        &self,
+        tx: &mut Transaction<'_, Postgres>,
+    ) -> Result<i32, sqlx::Error> {
         let id = query_scalar!(
-            "INSERT INTO media (title, synopsis) VALUES ($1, $2) RETURNING id",
-            self.title(), self.synopsis())
-            .fetch_one(executor)
-            .await?;
-        
+            r#"
+            INSERT INTO media (title)
+            VALUES ($1)
+            RETURNING id
+            "#,
+            self.title
+        )
+        .fetch_one(&mut **tx)
+        .await?;
+
         Ok(id)
     }
 }
 impl Deletable for Media {
-    async fn delete<'e, E>(&self, executor: E) -> Result<(), sqlx::Error>
-    where E: sqlx::Executor<'e, Database = sqlx::Postgres>
+    async fn delete(
+        id: i32,
+        tx: &mut Transaction<'_, Postgres>,
+    ) -> Result<(), sqlx::Error>
     {
-        todo!()
+        query!(
+            "DELETE FROM media WHERE id = $1",
+            id
+        )
+        .execute(&mut **tx)
+        .await?;
+
+        Ok(())
     }
 }
 

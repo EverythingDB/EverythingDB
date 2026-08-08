@@ -1,11 +1,18 @@
+use sqlx::{Postgres, Transaction};
+
 // Action traits
 pub trait Insertable {
-    async fn insert<'e, E>(&self, executor: E) -> Result<i32, sqlx::Error>
-    where E: sqlx::Executor<'e, Database = sqlx::Postgres>;
+    async fn insert(
+        &self,
+        tx: &mut Transaction<'_, Postgres>,
+    ) -> Result<i32, sqlx::Error>;
 }
+
 pub trait Deletable {
-    async fn delete<'e, E>(&self, executor: E) -> Result<(), sqlx::Error>
-    where E: sqlx::Executor<'e, Database = sqlx::Postgres>;
+    async fn delete(
+        id: i32,
+        tx: &mut Transaction<'_, Postgres>,
+    ) -> Result<(), sqlx::Error>;
 }
 
 // Has* traits

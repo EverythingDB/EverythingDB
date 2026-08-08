@@ -37,7 +37,7 @@ CREATE TABLE animation (
         REFERENCES audiovisual(media_id)
         ON DELETE CASCADE,
 
-    studio TEXT
+    animators TEXT[]
 );
 
 -- ===============================================

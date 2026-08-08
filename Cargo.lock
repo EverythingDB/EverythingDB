@@ -3,6 +3,16 @@
 version = 4
 
 [[package]]
+name = "EverythingDB"
+version = "0.1.0"
+dependencies = [
+ "dotenvy",
+ "isolang",
+ "sqlx",
+ "tokio",
+]
+
+[[package]]
 name = "allocator-api2"
 version = "0.2.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1116,16 +1126,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 2.0.119",
-]
-
-[[package]]
-name = "testing"
-version = "0.1.0"
-dependencies = [
- "dotenvy",
- "isolang",
- "sqlx",
- "tokio",
 ]
 
 [[package]]
