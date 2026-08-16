@@ -1,6 +1,6 @@
 use sqlx::{query, query_scalar, Postgres, Transaction};
 
-use crate::traits::{Deletable, HasID, HasSynopsis, HasTitle, Insertable};
+use crate::traits::{Deletable, Insertable};
 
 #[derive(Debug)]
 pub struct Media {
@@ -27,11 +27,12 @@ impl Insertable for Media {
     ) -> Result<i32, sqlx::Error> {
         let id = query_scalar!(
             r#"
-            INSERT INTO media (title)
-            VALUES ($1)
-            RETURNING id
+            INSERT INTO media (title, synopsis)
+            VALUES ($1, $2)
+            RETURNING id AS "id!"
             "#,
-            self.title
+            self.title,
+            self.synopsis
         )
         .fetch_one(&mut **tx)
         .await?;
@@ -39,6 +40,7 @@ impl Insertable for Media {
         Ok(id)
     }
 }
+
 impl Deletable for Media {
     async fn delete(
         id: i32,
@@ -56,9 +58,19 @@ impl Deletable for Media {
     }
 }
 
+pub trait HasID {
+    fn id(&self) -> Option<&i32>;
+}
+pub trait HasTitle {
+    fn title(&self) -> &str;
+}
+pub trait HasSynopsis {
+    fn synopsis(&self) -> &str;
+}
+
 has_property!(
     Media => {
-        [HasID, id, Option<i32>, id],
+        [HasID, id, Option<&i32>, id.as_ref()],
         [HasTitle, title, &str, title.as_str()],
         [HasSynopsis, synopsis, &str, synopsis.as_str()]
     }

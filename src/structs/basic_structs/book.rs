@@ -1,7 +1,9 @@
 use sqlx::{query_scalar, Postgres, Transaction};
 
+use crate::structs::root_structs::media::*;
 use crate::structs::property_structs::print::Print;
-use crate::{traits::{HasAuthor, HasID, HasISBN, HasPageCount, HasSynopsis, HasTitle, Insertable}};
+
+use crate::{traits::{Insertable}};
 
 
 #[derive(Debug)]
@@ -47,9 +49,19 @@ impl Insertable for Book {
     }
 }
 
+pub trait HasISBN {
+    fn isbn(&self) -> &str;
+}
+pub trait HasAuthor {
+    fn author(&self) -> &str;
+}
+pub trait HasPageCount {
+    fn page_count(&self) -> i32;
+}
+
 has_property!(
     Book => {
-        [HasID, id, Option<i32>, print.id()],
+        [HasID, id, Option<&i32>, print.id()],
         [HasTitle, title, &str, print.title()],
         [HasSynopsis, synopsis, &str, print.synopsis()],
         [HasISBN, isbn, &str, isbn.as_str()],

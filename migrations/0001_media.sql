@@ -13,6 +13,19 @@ CREATE TABLE media (
     created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE person (
+    id          SERIAL PRIMARY KEY,
+
+    "name"      TEXT NOT NULL,
+    aka         TEXT[],
+    bio         TEXT,
+    birth       DATE,
+    death       DATE,
+
+    works
+);
+-- store which tables this entry is part of
+
 -- ===============================================
 -- Basic Properties
 -- ===============================================

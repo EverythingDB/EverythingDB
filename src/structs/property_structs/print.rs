@@ -1,6 +1,7 @@
 use sqlx::{query_scalar, Postgres, Transaction};
 
-use crate::{structs::root_structs::media::Media, traits::{HasID, HasSynopsis, HasTitle, Insertable}};
+use crate::structs::root_structs::media::*;
+use crate::{traits::{Insertable}};
 
 #[derive(Debug)]
 pub struct Print {
@@ -39,7 +40,7 @@ impl Insertable for Print {
 
 has_property!(
     Print => {
-        [HasID, id, Option<i32>, media.id()],
+        [HasID, id, Option<&i32>, media.id()],
         [HasTitle, title, &str, media.title()],
         [HasSynopsis, synopsis, &str, media.synopsis()]
     }

@@ -1,6 +1,8 @@
 use sqlx::{query_scalar, Postgres, Transaction};
 
-use crate::{structs::root_structs::media::Media, traits::Insertable};
+use crate::structs::root_structs::media::*;
+
+use crate::{traits::Insertable};
 
 #[derive(Debug)]
 pub struct Animation{
@@ -26,13 +28,27 @@ impl Insertable for Animation{
 
         query_scalar!(
             r#"
-            INSERT INTO print (media_id)
-            VALUES ($1)
+            INSERT INTO animation (media_id, animators)
+            VALUES ($1, $2)
             RETURNING media_id
             "#,
-            media_id
+            media_id,
+            &self.animators
         )
         .fetch_one(&mut **tx)
         .await
     }
 }
+
+pub trait HasAnimators {
+    fn animators(&self) -> &Vec<String>;
+}
+
+has_property!(
+    Animation => {
+        [HasID, id, Option<&i32>, media.id()],
+        [HasTitle, title, &str, media.title()],
+        [HasSynopsis, synopsis, &str, media.synopsis()],
+        [HasAnimators, animators, &Vec<String>, animators.as_ref()]
+    }
+);
