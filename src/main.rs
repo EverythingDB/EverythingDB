@@ -4,8 +4,7 @@ use sqlx::postgres::PgPoolOptions;
 use std::error::Error;
 use std::env;
 
-mod structs;
-mod traits;
+mod models;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>>{
