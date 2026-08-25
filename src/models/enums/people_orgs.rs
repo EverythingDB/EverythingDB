@@ -2,10 +2,9 @@
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type)]
 #[sqlx(type_name = "gender_identity", rename_all = "snake_case")]
-pub enum GenderIdentity {
+pub enum Gender {
     Male,
     Female,
-    NonBinary,
     Other,
     Unspecified,
 }

@@ -1,10 +1,10 @@
+use EverythingDB::models::root_structs::media::Media;
+use EverythingDB::models::traits::Insertable;
 use sqlx::postgres::PgConnectOptions;
 use sqlx::postgres::PgPoolOptions;
 
 use std::error::Error;
 use std::env;
-
-mod models;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>>{
@@ -28,7 +28,7 @@ async fn main() -> Result<(), Box<dyn Error>>{
         .connect_with(options)
         .await?;
     
-    sqlx::migrate!("./migrations").run(&pool).await?;
+    //let mut tx = pool.begin().await?;
 
     Ok(())
 }

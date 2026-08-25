@@ -1,9 +1,10 @@
 //! Enums shared across many facets and tiers: naming, media satellites,
 //! relationships, credits, and the facet/platform registries.
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, sqlx::Type)]
 #[sqlx(type_name = "date_precision", rename_all = "snake_case")]
 pub enum DatePrecision {
+    #[default]
     Day,
     Month,
     Season,
@@ -12,7 +13,7 @@ pub enum DatePrecision {
     Unknown,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, sqlx::Type)]
 #[sqlx(type_name = "media_status", rename_all = "snake_case")]
 pub enum MediaStatus {
     Announced,
@@ -22,12 +23,14 @@ pub enum MediaStatus {
     Completed,
     Cancelled,
     Lost,
+    #[default]
     Unknown,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, sqlx::Type)]
 #[sqlx(type_name = "source_material", rename_all = "snake_case")]
 pub enum SourceMaterial {
+    #[default]
     Original,
     Novel,
     LightNovel,

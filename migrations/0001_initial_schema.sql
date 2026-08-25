@@ -64,7 +64,7 @@ $$ LANGUAGE plpgsql;
 CREATE TYPE date_precision   AS ENUM ('day','month','season','year','decade','unknown');
 CREATE TYPE media_status     AS ENUM ('announced','in_production','releasing','on_hiatus','completed','cancelled','lost','unknown');
 CREATE TYPE source_material  AS ENUM ('original','novel','light_novel','web_novel','manga','comic','game','visual_novel','tabletop','film','show','music','folklore','religious_text','historical','biography','news','other','unknown');
-CREATE TYPE gender_identity  AS ENUM ('male','female','non_binary','other','unspecified');
+CREATE TYPE gender           AS ENUM ('male','female','other','unspecified');
 CREATE TYPE org_type         AS ENUM ('studio','publisher','imprint','developer','distributor','record_label','network','streaming_service','production_committee','licensor','printer','theatre_company','collective','museum','other');
 
 CREATE TYPE title_type       AS ENUM ('primary','native','romanized','english','localized','alternative','abbreviation','working','translated');
@@ -280,7 +280,7 @@ CREATE TABLE person (
     given_name      text,
     family_name     text,
 
-    gender          gender_identity NOT NULL DEFAULT 'unspecified',
+    gender          gender NOT NULL DEFAULT 'unspecified',
     pronouns        text,
     birth_date      date,
     birth_precision date_precision NOT NULL DEFAULT 'day',
@@ -331,7 +331,7 @@ CREATE TABLE fictional_character (
     native_name     text,
     romanized_name  text,
     aliases         text[] NOT NULL DEFAULT '{}',
-    gender          gender_identity NOT NULL DEFAULT 'unspecified',
+    gender          gender NOT NULL DEFAULT 'unspecified',
     pronouns        text,
     age_description text,          -- '17', 'ageless', 'approx. 400'
     birthday_month  smallint CHECK (birthday_month BETWEEN 1 AND 12),

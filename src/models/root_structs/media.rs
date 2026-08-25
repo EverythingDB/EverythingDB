@@ -3,6 +3,9 @@ use chrono::{DateTime, NaiveDate, Utc};
 use rust_decimal::Decimal;
 use sqlx::query_scalar;
 
+use crate::models::enums::common::DatePrecision::Day;
+use crate::models::enums::common::MediaStatus::Completed;
+use crate::models::enums::common::SourceMaterial::Original;
 use crate::models::traits::{Insertable, Deletable};
 use crate::models::enums::common::{DatePrecision, MediaStatus, SourceMaterial};
 
@@ -48,6 +51,7 @@ pub struct Media{
     favorite_count: i32,
 
     // curation
+    /// Between 0 and 100
     data_completeness: i16,
     is_locked: bool,
     verified_at: Option<DateTime<Utc>>,
@@ -192,5 +196,72 @@ impl Deletable for Media {
     ) -> Result<(), sqlx::Error>
     {
         todo!()
+    }
+}
+
+impl Default for Media {
+    /// First season of Tenchi Muyo, nothing special about it, not even my favorite anime, just old enough, good enough, and iconic enough to garner the id of 1 imo
+    fn default() -> Self {
+        let synopsis: String = String::from("Tenchi Masaki was a normal 17-year-old boy until the day he accidentally releases the space pirate, Ryoko from a cave she was sealed in 700 years ago as the people thought she was a demon. In a series of events, four other alien girls show up at the Masaki household as Tenchi learns much of his heritage he never knew about and deal with five alien girls who each have some sort of romantic interest in him.");
+        let notes: String = String::from("First anime in the DB, not because it's special, but just cuz it's old enough, good (imo), and iconic to some degree");
+        let verified: Option<DateTime<Utc>> = DateTime::from_timestamp_secs(1787676872);
+        let created: Option<DateTime<Utc>> = DateTime::from_timestamp_secs(1787680205);
+
+        Media { 
+            id: Some(1), slug: Some(String::from("hi")),
+            primary_title: String::from("Tenchi Muyo! Ryo-Ohki"), original_title: Some(String::from("天地無用! 魎皇鬼 第1期")), romanized_title: Some(String::from("Tenchi Muyou! Ryououki Dai iki")), sort_title: Some(String::from("Tenchi Muyo! 1")), original_language_id: None,
+            country_of_origin_id: None, source_material: Original, status: Completed,
+            started_on: NaiveDate::from_ymd_opt(1992, 9, 25), ended_on: NaiveDate::from_ymd_opt(1993,3,25), date_precision: Day, is_indefinite: false,
+            tagline: None, synopsis: Some(synopsis), synopsis_language_id: None, notes: Some(notes),
+            is_adult: false, is_official: true, is_lost_media: false, is_unreleased: false,
+            mean_score: Decimal::from(73), score_count: 4148, popularity: 12431, favorite_count: 246,
+            data_completeness: 40, is_locked: false,
+            verified_at: verified, created_at: created.expect("if this somehow panics... idk what you did"), updated_at: created.expect("if this somehow panics... idk what you did")
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use sqlx::postgres::{PgConnectOptions, PgPool, PgPoolOptions};
+    use std::env;
+    use tokio::sync::OnceCell;
+
+    static POOL: OnceCell<PgPool> = OnceCell::const_new();
+
+    async fn pool() -> &'static PgPool {
+        POOL.get_or_init(|| async {
+            dotenvy::dotenv().ok();
+
+            let username = env::var("DB_USERNAME").unwrap();
+            let password = env::var("DB_PASSWORD").unwrap();
+            let database = env::var("DB_NAME").unwrap();
+            let host = env::var("DB_HOST").unwrap();
+            let port = env::var("DB_PORT").unwrap();
+
+            let options = PgConnectOptions::new()
+                .host(&host)
+                .port(port.parse().unwrap())
+                .username(&username)
+                .password(&password)
+                .database(&database);
+
+            PgPoolOptions::new()
+                .max_connections(5)
+                .connect_with(options)
+                .await
+                .unwrap()
+        })
+        .await
+    }
+
+    #[tokio::test]
+    async fn test_insert() -> Result<(), Box<dyn std::error::Error>> {
+        let mut tx = pool().await.begin().await?;
+        let tenchi = Media::default();
+        tenchi.insert(&mut tx).await?;
+
+        Ok(())
     }
 }

@@ -31,7 +31,7 @@
 'production_type' = "crate::models::enums::live_visual::ProductionType"
 'artwork_type' = "crate::models::enums::live_visual::ArtworkType"
 'tabletop_type' = "crate::models::enums::live_visual::TabletopType"
-'gender_identity' = "crate::models::enums::people_orgs::GenderIdentity"
+'gender' = "crate::models::enums::people_orgs::Gender"
 'org_type' = "crate::models::enums::people_orgs::OrgType"
 'narrative_form' = "crate::models::enums::print::NarrativeForm"
 'point_of_view' = "crate::models::enums::print::PointOfView"
