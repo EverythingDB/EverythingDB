@@ -1,7 +1,9 @@
 //! Enums shared across many facets and tiers: naming, media satellites,
 //! relationships, credits, and the facet/platform registries.
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, sqlx::Type)]
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, sqlx::Type, Serialize, Deserialize)]
 #[sqlx(type_name = "date_precision", rename_all = "snake_case")]
 pub enum DatePrecision {
     #[default]
@@ -13,7 +15,7 @@ pub enum DatePrecision {
     Unknown,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, sqlx::Type)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, sqlx::Type, Serialize, Deserialize)]
 #[sqlx(type_name = "media_status", rename_all = "snake_case")]
 pub enum MediaStatus {
     Announced,
@@ -27,7 +29,7 @@ pub enum MediaStatus {
     Unknown,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, sqlx::Type)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, sqlx::Type, Serialize, Deserialize)]
 #[sqlx(type_name = "source_material", rename_all = "snake_case")]
 pub enum SourceMaterial {
     #[default]
@@ -52,7 +54,7 @@ pub enum SourceMaterial {
     Unknown,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type, Serialize, Deserialize)]
 #[sqlx(type_name = "title_type", rename_all = "snake_case")]
 pub enum TitleType {
     Primary,
@@ -66,7 +68,7 @@ pub enum TitleType {
     Translated,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type, Serialize, Deserialize)]
 #[sqlx(type_name = "image_type", rename_all = "snake_case")]
 pub enum ImageType {
     Cover,
@@ -84,7 +86,7 @@ pub enum ImageType {
     BackCover,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type, Serialize, Deserialize)]
 #[sqlx(type_name = "relation_type", rename_all = "snake_case")]
 pub enum RelationType {
     Sequel,
@@ -113,7 +115,7 @@ pub enum RelationType {
     Other,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type, Serialize, Deserialize)]
 #[sqlx(type_name = "collection_type", rename_all = "snake_case")]
 pub enum CollectionType {
     Franchise,
@@ -127,7 +129,7 @@ pub enum CollectionType {
     CrossoverEvent,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type, Serialize, Deserialize)]
 #[sqlx(type_name = "credit_department", rename_all = "snake_case")]
 pub enum CreditDepartment {
     Direction,
@@ -148,7 +150,7 @@ pub enum CreditDepartment {
     Other,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type, Serialize, Deserialize)]
 #[sqlx(type_name = "character_billing", rename_all = "snake_case")]
 pub enum CharacterBilling {
     Main,
@@ -161,7 +163,7 @@ pub enum CharacterBilling {
     Narrator,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type, Serialize, Deserialize)]
 #[sqlx(type_name = "facet_tier", rename_all = "snake_case")]
 pub enum FacetTier {
     Property,
@@ -169,7 +171,7 @@ pub enum FacetTier {
     Composite,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type, Serialize, Deserialize)]
 #[sqlx(type_name = "platform_kind", rename_all = "snake_case")]
 pub enum PlatformKind {
     Console,

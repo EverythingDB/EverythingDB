@@ -1,62 +1,62 @@
 use ambassador::delegatable_trait;
 use chrono::{DateTime, NaiveDate, Utc};
+use serde::{Serialize, Deserialize};
 use rust_decimal::Decimal;
-use sqlx::query_scalar;
+use sqlx::{query, query_scalar};
 
-use crate::models::enums::common::DatePrecision::Day;
-use crate::models::enums::common::MediaStatus::Completed;
-use crate::models::enums::common::SourceMaterial::Original;
-use crate::models::traits::{Insertable, Deletable};
-use crate::models::enums::common::{DatePrecision, MediaStatus, SourceMaterial};
+use crate::models::{enums::common::{DatePrecision,  DatePrecision::Day,
+                                    MediaStatus,    MediaStatus::Completed,
+                                    SourceMaterial, SourceMaterial::Original}};
+use crate::models::traits::{RootStruct};
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Media{
-    id: Option<i32>,
-    slug: Option<String>,
+    id:                   Option<i32>,
+    slug:                 Option<String>,
 
-    // naming
-    primary_title: String,
-    original_title: Option<String>,
-    romanized_title: Option<String>,
-    sort_title: Option<String>,
+    // Naming
+    primary_title:        String,
+    original_title:       Option<String>,
+    romanized_title:      Option<String>,
+    sort_title:           Option<String>,
 
-    // provenance
+    // Provenance
     original_language_id: Option<i32>,
     country_of_origin_id: Option<i32>,
-    source_material: SourceMaterial,
+    source_material:      SourceMaterial,
 
-    // lifecycle
-    status: MediaStatus,
-    started_on: Option<NaiveDate>,
-    ended_on: Option<NaiveDate>,
-    date_precision: DatePrecision,
-    is_indefinite: bool,
+    // Lifecycle
+    status:               MediaStatus,
+    started_on:           Option<NaiveDate>,
+    ended_on:             Option<NaiveDate>,
+    date_precision:       DatePrecision,
+    is_indefinite:        bool,
 
-    // description
-    tagline: Option<String>,
-    synopsis: Option<String>,
+    // Description
+    tagline:              Option<String>,
+    synopsis:             Option<String>,
     synopsis_language_id: Option<i32>,
-    notes: Option<String>,
+    notes:                Option<String>,
 
-    // classification flags that apply to every form
-    is_adult: bool,
-    is_official: bool,
-    is_lost_media: bool,
-    is_unreleased: bool,
+    // Classification flags that apply to every form
+    is_adult:             bool,
+    is_official:          bool,
+    is_lost_media:        bool,
+    is_unreleased:        bool,
 
-    // denormalized aggregates, maintained by the application
-    mean_score: Decimal,
-    score_count: i32,
-    popularity: i32,
-    favorite_count: i32,
+    // Denormalized aggregates, maintained by the application
+    mean_score:           Decimal,
+    score_count:          i32,
+    popularity:           i32,
+    favorite_count:       i32,
 
-    // curation
+    // Special Data
     /// Between 0 and 100
-    data_completeness: i16,
-    is_locked: bool,
-    verified_at: Option<DateTime<Utc>>,
-    created_at: DateTime<Utc>,
-    updated_at: DateTime<Utc>
+    data_completeness:    i16,
+    is_locked:            bool,
+    verified_at:          Option<DateTime<Utc>>,
+    created_at:           DateTime<Utc>,
+    updated_at:           DateTime<Utc>
 }
 
 #[allow(dead_code)]
@@ -95,6 +95,7 @@ pub trait HasMedia{
     fn popularity(&self) -> &i32;
     fn favorite_count(&self) -> &i32;
 
+    // Special Data
     fn data_completeness(&self) -> &i16;
     fn is_locked(&self) -> &bool;
     fn verified_at(&self) -> Option<&DateTime<Utc>>;
@@ -136,6 +137,7 @@ impl HasMedia for Media {
     fn popularity(&self) -> &i32 {&self.popularity}
     fn favorite_count(&self) -> &i32 {&self.favorite_count}
 
+    // Special Data
     fn data_completeness(&self) -> &i16 {&self.data_completeness}
     fn is_locked(&self) -> &bool {&self.is_locked}
     fn verified_at(&self) -> Option<&DateTime<Utc>> {self.verified_at.as_ref()}
@@ -143,7 +145,7 @@ impl HasMedia for Media {
     fn updated_at(&self) -> &DateTime<Utc> {&self.updated_at}
 }
 
-impl Insertable for Media {
+impl RootStruct for Media {
     async fn insert(
         &self,
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
@@ -187,15 +189,20 @@ impl Insertable for Media {
 
         Ok(id)
     }
-}
 
-impl Deletable for Media {
     async fn delete(
         id: i32,
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<(), sqlx::Error>
     {
-        todo!()
+        query!(
+            r#"DELETE FROM media WHERE id = $1"#,
+            id
+        )
+        .execute(&mut **tx)
+        .await?;
+
+        Ok(())
     }
 }
 
@@ -205,7 +212,8 @@ impl Default for Media {
         let synopsis: String = String::from("Tenchi Masaki was a normal 17-year-old boy until the day he accidentally releases the space pirate, Ryoko from a cave she was sealed in 700 years ago as the people thought she was a demon. In a series of events, four other alien girls show up at the Masaki household as Tenchi learns much of his heritage he never knew about and deal with five alien girls who each have some sort of romantic interest in him.");
         let notes: String = String::from("First anime in the DB, not because it's special, but just cuz it's old enough, good (imo), and iconic to some degree");
         let verified: Option<DateTime<Utc>> = DateTime::from_timestamp_secs(1787676872);
-        let created: Option<DateTime<Utc>> = DateTime::from_timestamp_secs(1787680205);
+        let created: DateTime<Utc> = DateTime::from_timestamp_secs(1787680205)
+            .expect("if this somehow panics... idk what you did");
 
         Media { 
             id: Some(1), slug: Some(String::from("hi")),
@@ -216,7 +224,7 @@ impl Default for Media {
             is_adult: false, is_official: true, is_lost_media: false, is_unreleased: false,
             mean_score: Decimal::from(73), score_count: 4148, popularity: 12431, favorite_count: 246,
             data_completeness: 40, is_locked: false,
-            verified_at: verified, created_at: created.expect("if this somehow panics... idk what you did"), updated_at: created.expect("if this somehow panics... idk what you did")
+            verified_at: verified, created_at: created, updated_at: created
         }
     }
 }
@@ -257,10 +265,11 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn test_insert() -> Result<(), Box<dyn std::error::Error>> {
+    async fn test_insert_and_delete() -> Result<(), Box<dyn std::error::Error>> {
         let mut tx = pool().await.begin().await?;
         let tenchi = Media::default();
-        tenchi.insert(&mut tx).await?;
+        let id = tenchi.insert(&mut tx).await?;
+        Media::delete(id, &mut tx).await?;
 
         Ok(())
     }

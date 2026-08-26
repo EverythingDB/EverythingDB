@@ -1,5 +1,3 @@
-use EverythingDB::models::root_structs::media::Media;
-use EverythingDB::models::traits::Insertable;
 use sqlx::postgres::PgConnectOptions;
 use sqlx::postgres::PgPoolOptions;
 

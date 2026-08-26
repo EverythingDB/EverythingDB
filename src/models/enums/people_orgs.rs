@@ -1,11 +1,14 @@
 //! Enums for the `person` and `organization` root tables.
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type)]
-#[sqlx(type_name = "gender_identity", rename_all = "snake_case")]
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type, Default, Serialize, Deserialize)]
+#[sqlx(type_name = "gender", rename_all = "snake_case")]
 pub enum Gender {
     Male,
     Female,
     Other,
+    #[default]
     Unspecified,
 }
 

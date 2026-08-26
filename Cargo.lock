@@ -11,6 +11,8 @@ dependencies = [
  "dotenvy",
  "isolang",
  "rust_decimal",
+ "serde",
+ "serde_json",
  "sqlx",
  "tokio",
 ]
@@ -225,6 +227,7 @@ dependencies = [
  "iana-time-zone",
  "js-sys",
  "num-traits",
+ "serde",
  "wasm-bindgen",
  "windows-link",
 ]

@@ -4,10 +4,12 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-ambassador = "0.5.1"
-chrono = "0.4.45"
-dotenvy = {version = "0.15.7" }
-isolang = "2.4.0"
-rust_decimal = "1.42.1"
-sqlx = { version = "0.9.0", features = ["postgres", "runtime-tokio", "chrono", "rust_decimal", "sqlx-toml"] }
-tokio = { version = "1.53.1", features = ["full"] }
+sqlx         = { version = "0.9.0", features = ["postgres", "runtime-tokio", "chrono", "rust_decimal", "sqlx-toml"] }
+serde        = { version = "1.0.229", features = ["derive"] }
+chrono       = { version = "0.4.45", features = ["serde"] }
+tokio        = { version = "1.53.1", features = ["full"] }
+serde_json   = { version = "1.0.151" }
+rust_decimal = { version = "1.42.1"} 
+ambassador   = { version = "0.5.1" }
+dotenvy      = {version = "0.15.7" }
+isolang      = { version = "2.4.0" }
