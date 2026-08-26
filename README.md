@@ -88,24 +88,6 @@ Full breakdown — every column, every enum, the bit registry, the index rationa
 
 ---
 
-## Layout
-
-```
-migrations/
-  0001_initial_schema.sql       # the whole schema, one migration
-  Schema documentation.md       # reference: facets, tiers, derived types, indexes
-src/
-  models/
-    enums/                      # Rust mirrors of all 51 Postgres enums
-      common.rs  print.rs  audiovisual.rs  games.rs
-      live_visual.rs  people_orgs.rs  publishing.rs
-    root_structs/               # Tier 1 models — media, person
-    traits.rs                   # RootStruct / NonRootStruct insert + delete
-  queries/                      # (empty — next up)
-  main.rs                       # pool bootstrap
-sqlx.toml                       # enum type-overrides for the query macros
-```
-
 ### Rust conventions
 
 - Nested structs share a single `id` across their table stack, matching the shared-PK design.
