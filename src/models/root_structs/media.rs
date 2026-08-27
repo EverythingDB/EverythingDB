@@ -58,7 +58,7 @@ pub struct Media{
     updated_at:           DateTime<Utc>
 }
 
-#[allow(dead_code)]
+/// Provides Getters for innermost Media fields while also defining the canonical path to them
 pub trait HasMedia{
     fn media(&self) -> &Media;
     

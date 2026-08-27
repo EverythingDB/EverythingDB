@@ -150,7 +150,7 @@ pub enum AudienceDemographic {
     Professional,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type, Serialize, Deserialize)]
 #[sqlx(type_name = "book_type", rename_all = "snake_case")]
 pub enum BookType {
     Novel,

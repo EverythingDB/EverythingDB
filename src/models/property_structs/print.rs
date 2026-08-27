@@ -5,21 +5,29 @@ use crate::models::{enums::print::{ProseFormat, ReadingDirection}, root_structs:
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Print {
     media:                     Media,
+
+    // counts
     page_count:                Option<i32>,
     word_count:                Option<i32>,
     character_count:           Option<i32>,
+    illustration_count:        Option<i32>,
+
+    // text formating and languge
     prose_format:              ProseFormat,
     reading_direction:         ReadingDirection,
     script_language_id:        Option<i32>,
+
+    // flags
     is_illustrated:            bool,
-    illustration_count:        Option<i32>,
+    is_translation:            bool,
     has_furigana:              bool,
     has_footnotes:             bool,
     has_index:                 bool,
     has_bibliography:          bool,
+
+    // general info
     reading_level:             Option<String>, // Lexile, JLPT, CEFR, grade
     estimated_reading_minutes: Option<i32>,
-    is_translation:            bool,
     translated_from_id:        Option<i32>
 }
 
@@ -29,6 +37,7 @@ impl HasMedia for Print {
     }
 }
 
+/// Provides Getters for innermost Print fields while also defining the canonical path to them
 pub trait HasPrint
 where
     Self: HasMedia,
@@ -98,7 +107,14 @@ impl NonRootStruct for Print {
 }
 
 impl Default for Print {
+
+    /// Bokuyaba Volume 1
     fn default() -> Self {
-        Self { media: Default::default(), page_count: Default::default(), word_count: Default::default(), character_count: Default::default(), prose_format: Default::default(), reading_direction: Default::default(), script_language_id: Default::default(), is_illustrated: Default::default(), illustration_count: Default::default(), has_furigana: Default::default(), has_footnotes: Default::default(), has_index: Default::default(), has_bibliography: Default::default(), reading_level: Default::default(), estimated_reading_minutes: Default::default(), is_translation: Default::default(), translated_from_id: Default::default() }
+        Self {
+            media: Default::default(), // change
+            page_count: Default::default(), word_count: Default::default(), character_count: Default::default(), illustration_count: Default::default(),
+            prose_format: Default::default(), reading_direction: Default::default(), script_language_id: Default::default(),
+            is_illustrated: Default::default(), is_translation: Default::default(), has_furigana: Default::default(), has_footnotes: Default::default(), has_index: Default::default(), has_bibliography: Default::default(),
+            reading_level: Default::default(), estimated_reading_minutes: Default::default(), translated_from_id: Default::default() }
     }
 }
