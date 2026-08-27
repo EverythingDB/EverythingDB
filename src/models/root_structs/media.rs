@@ -1,4 +1,3 @@
-use ambassador::delegatable_trait;
 use chrono::{DateTime, NaiveDate, Utc};
 use serde::{Serialize, Deserialize};
 use rust_decimal::Decimal;
@@ -60,50 +59,52 @@ pub struct Media{
 }
 
 #[allow(dead_code)]
-#[delegatable_trait]
 pub trait HasMedia{
-    fn id(&self) -> Option<&i32>;
-    fn slug(&self) -> Option<&str>;
+    fn media(&self) -> &Media;
+    
+    fn id(&self) -> Option<&i32> {self.media().id()}
+    fn slug(&self) -> Option<&str> {self.media().slug()}
 
-    fn original_language_id(&self) -> Option<&i32>;
-    fn country_of_origin_id(&self) -> Option<&i32>;
-    fn source_material(&self) -> &SourceMaterial;
+    fn original_language_id(&self) -> Option<&i32> {self.media().original_language_id()}
+    fn country_of_origin_id(&self) -> Option<&i32> {self.media().country_of_origin_id()}
+    fn source_material(&self) -> &SourceMaterial {self.media().source_material()}
 
-    fn primary_title(&self) -> &str;
-    fn original_title(&self) -> Option<&str>;
-    fn romanized_title(&self) -> Option<&str>;
-    fn sort_title(&self) -> Option<&str>;
+    fn primary_title(&self) -> &str {self.media().primary_title()}
+    fn original_title(&self) -> Option<&str> {self.media().original_title()}
+    fn romanized_title(&self) -> Option<&str> {self.media().romanized_title()}
+    fn sort_title(&self) -> Option<&str> {self.media().sort_title()}
 
-    fn status(&self) -> &MediaStatus;
-    fn started_on(&self) -> Option<&NaiveDate>;
-    fn ended_on(&self) -> Option<&NaiveDate>;
-    fn date_precision(&self) -> &DatePrecision;
-    fn is_indefinite(&self) -> &bool;
+    fn status(&self) -> &MediaStatus {self.media().status()}
+    fn started_on(&self) -> Option<&NaiveDate> {self.media().started_on()}
+    fn ended_on(&self) -> Option<&NaiveDate> {self.media().ended_on()}
+    fn date_precision(&self) -> &DatePrecision {self.media().date_precision()}
+    fn is_indefinite(&self) -> &bool {self.media().is_indefinite()}
 
-    fn tagline(&self) -> Option<&str>;
-    fn synopsis(&self) -> Option<&str>;
-    fn synopsis_language_id(&self) -> Option<&i32>;
-    fn notes(&self) -> Option<&str>;
+    fn tagline(&self) -> Option<&str> {self.media().tagline()}
+    fn synopsis(&self) -> Option<&str> {self.media().synopsis()}
+    fn synopsis_language_id(&self) -> Option<&i32> {self.media().synopsis_language_id()}
+    fn notes(&self) -> Option<&str> {self.media().notes()}
 
-    fn is_adult(&self) -> &bool;
-    fn is_official(&self) -> &bool;
-    fn is_lost_media(&self) -> &bool;
-    fn is_unreleased(&self) -> &bool;
+    fn is_adult(&self) -> &bool {self.media().is_adult()}
+    fn is_official(&self) -> &bool {self.media().is_official()}
+    fn is_lost_media(&self) -> &bool {self.media().is_lost_media()}
+    fn is_unreleased(&self) -> &bool {self.media().is_unreleased()}
 
-    fn mean_score(&self) -> &Decimal;
-    fn score_count(&self) -> &i32;
-    fn popularity(&self) -> &i32;
-    fn favorite_count(&self) -> &i32;
+    fn mean_score(&self) -> &Decimal {self.media().mean_score()}
+    fn score_count(&self) -> &i32 {self.media().score_count()}
+    fn popularity(&self) -> &i32 {self.media().popularity()}
+    fn favorite_count(&self) -> &i32 {self.media().favorite_count()}
 
-    // Special Data
-    fn data_completeness(&self) -> &i16;
-    fn is_locked(&self) -> &bool;
-    fn verified_at(&self) -> Option<&DateTime<Utc>>;
-    fn created_at(&self) -> &DateTime<Utc>;
-    fn updated_at(&self) -> &DateTime<Utc>;
+    fn data_completeness(&self) -> &i16 {self.media().data_completeness()}
+    fn is_locked(&self) -> &bool {self.media().is_locked()}
+    fn verified_at(&self) -> Option<&DateTime<Utc>> {self.media().verified_at()}
+    fn created_at(&self) -> &DateTime<Utc> {self.media().created_at()}
+    fn updated_at(&self) -> &DateTime<Utc> {self.media().updated_at()}
 }
 
 impl HasMedia for Media {
+    fn media(&self) -> &Media { self }
+
     fn id(&self) -> Option<&i32> {self.id.as_ref()}
     fn slug(&self) -> Option<&str> {self.slug.as_deref()}
 

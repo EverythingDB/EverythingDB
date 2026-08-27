@@ -1,5 +1,4 @@
 use crate::models::{enums::{common::DatePrecision, people_orgs::Gender}, traits::RootStruct};
-use ambassador::{delegatable_trait};
 use chrono::{DateTime, NaiveDate, Utc};
 use serde::{Serialize, Deserialize};
 
@@ -42,8 +41,9 @@ pub struct Person {
 }
 
 #[allow(dead_code)]
-#[delegatable_trait]
 pub trait HasPerson{
+    fn person(&self) -> &Person;
+
     fn id(&self) -> Option<&i32>;
     fn slug(&self) -> Option<&str>;
 
@@ -80,6 +80,8 @@ pub trait HasPerson{
 }
 
 impl HasPerson for Person {
+    fn person(&self) -> &Person { self }
+
     fn id(&self) -> Option< &i32>  { self.id.as_ref() }
     fn slug(&self) -> Option< &str>  { self.slug.as_deref() }
 

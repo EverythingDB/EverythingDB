@@ -1,6 +1,10 @@
 //! Enums for the narrative, print, sequential_art and publication facets,
 //! plus the book/comic basic types built on top of them.
 
+use std::default;
+
+use serde::{Deserialize, Serialize};
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type)]
 #[sqlx(type_name = "narrative_form", rename_all = "snake_case")]
 pub enum NarrativeForm {
@@ -27,9 +31,10 @@ pub enum PointOfView {
     Mixed,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type, Default, Serialize, Deserialize)]
 #[sqlx(type_name = "prose_format", rename_all = "snake_case")]
 pub enum ProseFormat {
+    #[default]
     Prose,
     Verse,
     Script,
@@ -40,9 +45,10 @@ pub enum ProseFormat {
     Mixed,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type, Default, Serialize, Deserialize)]
 #[sqlx(type_name = "reading_direction", rename_all = "snake_case")]
 pub enum ReadingDirection {
+    #[default]
     Ltr,
     Rtl,
     VerticalRtl,

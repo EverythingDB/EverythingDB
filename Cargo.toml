@@ -10,6 +10,5 @@ chrono       = { version = "0.4.45", features = ["serde"] }
 tokio        = { version = "1.53.1", features = ["full"] }
 serde_json   = { version = "1.0.151" }
 rust_decimal = { version = "1.42.1"} 
-ambassador   = { version = "0.5.1" }
 dotenvy      = {version = "0.15.7" }
 isolang      = { version = "2.4.0" }
