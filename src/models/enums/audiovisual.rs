@@ -1,6 +1,8 @@
 //! Enums for the audiovisual, animation, audio and musical facets, the
 //! `show` basic type, and the audiobook/music_video composite types.
 
+use serde::{Deserialize, Serialize};
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type)]
 #[sqlx(type_name = "color_system", rename_all = "snake_case")]
 pub enum ColorSystem {
@@ -51,7 +53,7 @@ pub enum AnimationTechnique {
     Mixed,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type, Serialize, Deserialize, Default)]
 #[sqlx(type_name = "recording_type", rename_all = "snake_case")]
 pub enum RecordingType {
     Studio,
@@ -60,6 +62,7 @@ pub enum RecordingType {
     Remote,
     Synthetic,
     Archival,
+    #[default]
     Mixed,
 }
 
@@ -104,9 +107,10 @@ pub enum VoicedExtent {
     FullIncludingProtagonist,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type, Serialize, Deserialize, Default)]
 #[sqlx(type_name = "narration_style", rename_all = "snake_case")]
 pub enum NarrationStyle {
+    #[default]
     SingleNarrator,
     DualNarrator,
     FullCast,

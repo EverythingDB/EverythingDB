@@ -38,10 +38,7 @@ impl HasMedia for Print {
 }
 
 /// Provides Getters for innermost Print fields while also defining the canonical path to them
-pub trait HasPrint
-where
-    Self: HasMedia,
-{
+pub trait HasPrint: HasMedia{
     fn print(&self) -> &Print;
 
     // counts

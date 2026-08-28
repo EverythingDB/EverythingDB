@@ -923,10 +923,8 @@ CREATE TABLE audiobook (
     id                integer PRIMARY KEY REFERENCES audio(id) ON DELETE CASCADE,
     source_book_id    integer REFERENCES book(id) ON DELETE SET NULL,
     narration_style   narration_style NOT NULL DEFAULT 'single_narrator',
-    is_abridged       boolean NOT NULL DEFAULT false,
     is_dramatized     boolean NOT NULL DEFAULT false,
     has_sound_design  boolean NOT NULL DEFAULT false,
-    chapter_count     smallint,
     CONSTRAINT audiobook_publication_fk FOREIGN KEY (id) REFERENCES publication(id) ON DELETE CASCADE,
     CONSTRAINT audiobook_narrative_fk   FOREIGN KEY (id) REFERENCES narrative(id) ON DELETE CASCADE
 );

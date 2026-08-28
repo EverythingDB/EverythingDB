@@ -777,9 +777,8 @@ audiovisual work (sprites, CGs, music, voice acting compose the presentation).
 
 ### `audiobook`
 
-Extends: `audio`
+Extends: `audio` and `book`
 Additional required facets: `publication`, `narrative`
-
 | Column | Notes |
 |--------|-------|
 | `source_book_id` | FK book → the text this is a reading of |
