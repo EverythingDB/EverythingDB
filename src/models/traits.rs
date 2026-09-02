@@ -1,6 +1,7 @@
 use sqlx::{Postgres, Transaction};
 
 // Root Structs action traits
+#[allow(dead_code)]
 ///These are basic functions concerning the DB for Root structs
 pub(crate) trait RootStruct {
     /// Inserts a root scuct into the DB and returns its assigned ID
@@ -17,6 +18,7 @@ pub(crate) trait RootStruct {
 }
 
 // Non-root structs action traits
+#[allow(dead_code)]
 ///These are basic functions concerning the DB for non-Root structs
 pub(crate) trait NonRootStruct {
     /// Insert a non-root struct into the DB.

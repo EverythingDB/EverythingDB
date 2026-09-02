@@ -5,6 +5,7 @@ use std::error::Error;
 use std::env;
 
 #[tokio::main]
+#[allow(unused_variables)]
 async fn main() -> Result<(), Box<dyn Error>>{
     dotenvy::dotenv().ok();
 
@@ -20,7 +21,7 @@ async fn main() -> Result<(), Box<dyn Error>>{
         .username(&username)
         .password(&password)
         .database(&database);
-
+    
     let pool = PgPoolOptions::new()
         .max_connections(5)
         .connect_with(options)
