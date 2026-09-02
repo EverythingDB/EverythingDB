@@ -1,3 +1,5 @@
+use sqlx::query_scalar;
+
 use crate::models::basic_types::book::HasBook;
 use crate::models::property_structs::audio::HasAudio;
 use crate::models::property_structs::print::HasPrint;
@@ -59,7 +61,27 @@ impl NonRootStruct for AudioBook {
         &self,
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<(), sqlx::Error> {
-        todo!()
+        query_scalar!(
+        r#"
+            INSERT INTO audiobook (
+                id,
+                source_book_id, narration_style,
+                is_dramatized, has_sound_design
+                )
+                VALUES (
+                $1,
+                $2, $3,
+                $4, $5
+                )
+            "#,
+            self.id(),
+            self.book().id(), self.narration_style(),
+            self.is_dramatized(), self.has_sound_design()
+        )
+        .fetch_one(&mut **tx)
+        .await?;
+
+        Ok(())
     }
 }
 

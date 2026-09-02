@@ -1,8 +1,6 @@
 //! Enums for the narrative, print, sequential_art and publication facets,
 //! plus the book/comic basic types built on top of them.
 
-use std::default;
-
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, sqlx::Type)]

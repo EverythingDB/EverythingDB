@@ -1,6 +1,7 @@
 use chrono::NaiveDate;
 use rust_decimal::Decimal;
 use serde::{Serialize, Deserialize};
+use sqlx::query_scalar;
 
 use crate::models::{enums::print::BookType::{self, PictureBook}, property_structs::print::{HasPrint, Print}, root_structs::media::HasMedia, traits::NonRootStruct};
 
@@ -69,7 +70,34 @@ impl NonRootStruct for Book {
         &self,
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<(), sqlx::Error> {
-        todo!()
+        query_scalar!(
+        r#"
+            INSERT INTO book (
+            id,
+            book_type, volume_number, series_position,
+            original_published_on,
+            is_abridged, is_annotated,
+            dewey_decimal, library_of_congress,
+            subject_headings
+            )
+            VALUES (
+            $1,
+            $2::book_type, $3, $4,
+            $5,
+            $6, $7,
+            $8, $9, $10
+            )
+            "#,
+            self.id(),
+            self.book_type(), self.volume_number(), self.series_position(),
+            self.original_published_on(),
+            self.is_abridged(), self.is_annotated(),
+            self.dewey_decimal(), self.library_of_congress(), self.subject_headings()
+        )
+        .fetch_one(&mut **tx)
+        .await?;
+
+        Ok(())
     }
 }
 

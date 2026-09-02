@@ -1,4 +1,5 @@
 use serde::{Serialize, Deserialize};
+use sqlx::{query_scalar};
 
 use crate::models::{enums::print::{ProseFormat, ReadingDirection}, root_structs::media::{HasMedia, Media}, traits::NonRootStruct};
 
@@ -99,8 +100,35 @@ impl NonRootStruct for Print {
         &self,
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<(), sqlx::Error> {
-        todo!()
+        query_scalar!(
+            r#"
+            INSERT INTO print (
+                id,
+                page_count, word_count, character_count, illustration_count,
+                prose_format, reading_direction, script_language_id,
+                is_illustrated, is_translation, has_furigana, has_footnotes, has_index, has_bibliography,
+                reading_level, estimated_reading_minutes, translated_from_id
+                )
+                VALUES (
+                $1,
+                $2, $3, $4, $5,
+                $6::prose_format, $7::reading_direction, $8,
+                $9, $10, $11, $12, $13, $14,
+                $15, $16, $17
+                )
+            "#,
+            self.id(),
+            self.page_count(), self.word_count(), self.character_count(), self.illustration_count(),
+            self.prose_format(), self.reading_direction(), self.script_language_id(),
+            self.is_illustrated(), self.is_translation(), self.has_furigana(), self.has_footnotes(), self.has_index(), self.has_bibliography(),
+            self.reading_level(), self.estimated_reading_minutes(), self.translated_from_id()  
+        )
+        .fetch_one(&mut **tx)
+        .await?;
+
+        Ok(())
     }
+    
 }
 
 impl Default for Print {

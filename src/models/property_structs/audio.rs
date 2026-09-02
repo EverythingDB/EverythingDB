@@ -1,6 +1,7 @@
 use chrono::NaiveDate;
 use rust_decimal::Decimal;
 use serde::{Serialize, Deserialize};
+use sqlx::query_scalar;
 
 use crate::models::{enums::audiovisual::RecordingType, root_structs::media::{HasMedia, Media}, traits::NonRootStruct};
 
@@ -83,7 +84,36 @@ impl NonRootStruct for Audio {
         &self,
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<(), sqlx::Error> {
-        todo!()
+        query_scalar!(
+        r#"
+            INSERT INTO audio (
+                id,
+                duration_seconds, recording_type,
+                sample_rate_hz, bit_depth, bitrate_kbps,
+                channel_layout, is_lossless, loudness_lufs,
+                dynamic_range_db, is_dialogue_driven, has_transcript,
+                spoken_language_id, recorded_on, recording_venue
+                )
+                VALUES (
+                $1,
+                $2, $3::recording_type,
+                $4, $5, $6,
+                $7, $8, $9,
+                $10, $11, $12,
+                $13, $14, $15
+                )
+            "#,
+            self.id(),
+            self.duration_seconds(), self.recording_type(),
+            self.sample_rate_hz(), self.bit_depth(), self.bitrate_kbps(),
+            self.channel_layout(), self.is_lossless(), self.loudness_lufs(),
+            self.dynamic_range_db(), self.is_dialogue_driven(), self.has_transcript(),
+            self.spoken_language_id(), self.recorded_on(), self.recording_venue()
+        )
+        .fetch_one(&mut **tx)
+        .await?;
+
+        Ok(())
     }
 }
 

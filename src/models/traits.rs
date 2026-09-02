@@ -1,7 +1,8 @@
 use sqlx::{Postgres, Transaction};
 
 // Root Structs action traits
-pub trait RootStruct {
+///These are basic functions concerning the DB for Root structs
+pub(crate) trait RootStruct {
     /// Inserts a root scuct into the DB and returns its assigned ID
     async fn insert(
         &self,
@@ -16,7 +17,8 @@ pub trait RootStruct {
 }
 
 // Non-root structs action traits
-pub trait NonRootStruct {
+///These are basic functions concerning the DB for non-Root structs
+pub(crate) trait NonRootStruct {
     /// Insert a non-root struct into the DB.
     /// Must have an ID already present in &self
     async fn insert(

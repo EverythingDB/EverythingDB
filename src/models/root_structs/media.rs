@@ -152,7 +152,7 @@ impl RootStruct for Media {
         tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     ) -> Result<i32, sqlx::Error>
     {
-        let id = query_scalar!(
+        let id: i32 = query_scalar!(
         r#"
             INSERT INTO media (
                 slug,
