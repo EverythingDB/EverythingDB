@@ -59,8 +59,7 @@ AND <optional extra_predicate>
 |------|------------|
 | `anime` | `animation` + (`movie` or `show`) + JP origin |
 | `cartoon` | `animation` + (`movie` or `show`) + not JP origin |
-| `manga` | `comic` + JP origin |
-| `manhwa` / `manhua` | `comic` + KR / CN·TW·HK origin |
+| `manga` / `manhwa` / `manhua` | `comic` + JP / KR / CN·TW·HK origin |
 | `webtoon` | `comic` + `panel_layout = vertical_scroll` |
 | `light_novel` | `book` + `print.is_illustrated` + JP origin |
 | `audio_drama` | `audio` + `narrative` − `musical` − `audiobook` |
@@ -113,7 +112,7 @@ DATABASE_URL=postgres://postgres:yourpassword@localhost:5432/everythingdb
 EOF
 
 # 2. apply the schema
-cargo install sqlx-cli --no-default-features --features postgres
+cargo install sqlx-cli --no-default-features --features postgres,sqlx-toml
 sqlx migrate run
 
 # 3. build
