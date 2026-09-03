@@ -1,0 +1,50 @@
+name: Tests
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: everythingdb
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_NAME: everythingdb
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/everythingdb
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install SQLx CLI
+        run: cargo install sqlx-cli --no-default-features --features postgres
+
+      - name: Run migrations
+        run: sqlx migrate run
+
+      - name: Run tests
+        run: cargo test
