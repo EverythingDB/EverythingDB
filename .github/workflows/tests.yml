@@ -41,8 +41,17 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Cache SQLx CLI
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/sqlx
+          key: sqlx-cli-0.9.0
+
       - name: Install SQLx CLI
-        run: cargo install sqlx-cli --no-default-features --features postgres,sqlx-toml
+        run: |
+          if ! command -v sqlx >/dev/null 2>&1; then
+          cargo install sqlx-cli --no-default-features --features postgres,sqlx-toml
+          fi
 
       - name: Run migrations
         run: sqlx migrate run
